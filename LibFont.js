@@ -238,9 +238,21 @@ class BitmapFont {
   }
 
   static loadFont = (url) => {
-    return fetch(url)
-      .then(response => response.arrayBuffer())
-      .then(this.loadFontFromArrayBuffer)
+    return new Promise((resolve, reject) => {
+      const req = new XMLHttpRequest();
+      const fail = () => {
+        reject(new Error("Failed to fetch font :^("))
+      };
+      req.onload = () => {
+        if (req.status == 200)
+          return resolve(req.response)
+        fail()
+      }
+      req.onerror = fail;
+      req.open("GET", url)
+      req.responseType = "arraybuffer";
+      req.send();
+    }).then(this.loadFontFromArrayBuffer)
   }
 
   drawTextInto = (canvasCtx, drawX, drawY, text) => {
