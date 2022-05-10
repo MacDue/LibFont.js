@@ -1,0 +1,111 @@
+<html>
+<head>
+  <script src="./LibFont.js"></script>
+</head>
+<script>
+  const FONT_LIST = [
+    "KaticaRegular10.font",
+    "RomanItalic10.font",
+    "LiberationSerif-BoldItalic.ttf",
+    "CsillaRegular10.font",
+    "PebbletonBold14.font",
+    "CsillaRegular12.font",
+    "AtaraxiaBold8.font",
+    "TinyRegular6.font",
+    "LucidityBold12.font",
+    "MarietaBold24.font",
+    "AtaraxiaBold10.font",
+    "ComicBookRegular10.font",
+    "TinierRegular5.font",
+    "LiberationSerif-Bold.ttf",
+    "KaticaRegular12.font",
+    "AtaraxiaLight8.font",
+    "SourceBold10.font",
+    "SatoriMonoBold10.font",
+    "LiberationSerif-Italic.ttf",
+    "RomanRegular10.font",
+    "LizaBlack36.font",
+    "PebbletonRegular14.font",
+    "LizaRegular10.font",
+    "CathodeRegular10.font",
+    "LizaBold24.font",
+    "SatoriBold10.font",
+    "TengchahRegular12.font",
+    "MarietaRegular24.font",
+    "LizaRegular36.font",
+    "CJKBiángRegular36.font",
+    "CsillaBold10.font",
+    "LizaBold36.font",
+    "MarietaBold36.font",
+    "SourceItalic10.font",
+    "LizaBlack24.font",
+    "KaticaItalic10.font",
+    "AtaraxiaLight10.font",
+    "MarietaRegular36.font",
+    "KaticaBold12.font",
+    "LucidityRegular12.font",
+    "LizaRegular24.font",
+    "SourceRegular10.font",
+    "RomanItalic8.font",
+    "SatoriMonoRegular10.font",
+    "KaticaBold10.font",
+    "LizaBold10.font",
+    "CsillaBold12.font",
+    "LizaBlack10.font",
+    "SatoriRegular10.font",
+    "SerenitySans-Regular.ttf",
+    "LiberationSerif-Regular.ttf"
+  ]
+
+  window.onload = () => {
+    const dropdown = document.getElementById("font-selection");
+    for (const font of FONT_LIST) {
+      const option = document.createElement("option");
+      option.value = font;
+      option.text = font;
+      dropdown.appendChild(option)
+    }
+
+    const canvas = document.getElementById("preview-canvas");
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'black';
+
+    const input = document.getElementById("text-input");
+
+    let currentFont = null;
+    const redrawText = (text) => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      currentFont.drawTextInto(ctx, 1, 10, text);
+    };
+
+    const loadSelectedFont = () => {
+      const selectedFont = FONT_LIST[dropdown.selectedIndex]
+      BitmapFont.loadFont(`./fonts/${selectedFont}`).then(font => {
+        currentFont = font;
+        redrawText(input.value);
+      })
+    }
+
+    dropdown.onchange = loadSelectedFont
+    input.onkeyup = input.onchange = (e) => {
+      if (currentFont) {
+        redrawText(e.target.value);
+      }
+    }
+
+    loadSelectedFont()
+  }
+</script>
+<body>
+  <h1>Try out a SerenityOS font!</h1>
+  <div style="display: flex; flex-direction: column;">
+    <select id="font-selection">
+    </select>
+    <input id="text-input" type="text" value="Well, hello friends!" />
+    <div>
+      <canvas style="flex-grow: 0; width: 1024; height: auto; image-rendering: pixelated;" id="preview-canvas"
+        width="512" height="50"></canvas>
+    </div>
+  </div>
+</body>
+</html>
