@@ -5,15 +5,24 @@
   <script src="./LibFont.js"></script>
   <style>
     .font-radio {
-      border-style: solid;
-      border-width: 1px;
       margin: 3px;
       padding: 3px;
       display: inline-block;
       background-color: aliceblue;
     }
+
     #font-selection {
       margin-bottom: 6px;
+    }
+
+    th {
+      text-align: right;
+    }
+
+    #font-info,
+    .font-radio {
+      border-style: solid;
+      border-width: 1px;
     }
   </style>
   <script>
@@ -64,7 +73,7 @@
       "CsillaBold12.font",
       "LizaBlack10.font",
       "SatoriRegular10.font",
-    ]
+    ];
 
     window.onload = () => {
       const input = document.getElementById("text-input");
@@ -75,13 +84,35 @@
         currentFont.drawTextInto(ctx, 1, 10, text);
       };
 
+      const updateFontInfoTable = (font) => {
+        const propMap = {
+          "prop-font-name": "name",
+          "prop-font-family": "family",
+          // 'prop-glyph-count': 'glyphCount',
+          "prop-glyph-width": "glyphWidth",
+          "prop-glyph-height": "glyphHeight",
+          "prop-min-glyph-width": "minGlyphWidth",
+          "prop-max-glyph-width": "maxGlyphWidth",
+          "prop-basline": "baseline",
+          "prop-mean-line": "meanLine",
+          "prop-presentation-size": "presentationSize",
+          "prop-weight": "weight",
+          "prop-slope": "slope",
+          "prop-fixed-width": "fixedWidth",
+        };
+        for (const [id, attr] of Object.entries(propMap)) {
+          document.getElementById(id).innerText = font[attr];
+        }
+      };
+
       const loadSelectedFont = (fontIndex) => {
-        const selectedFont = FONT_LIST[fontIndex]
-        BitmapFont.loadFont(`./fonts/${selectedFont}`).then(font => {
+        const selectedFont = FONT_LIST[fontIndex];
+        BitmapFont.loadFont(`./fonts/${selectedFont}`).then((font) => {
           currentFont = font;
           redrawText(input.value);
-        })
-      }
+          updateFontInfoTable(font);
+        });
+      };
 
       const radioButtons = document.getElementById("font-selection");
       FONT_LIST.forEach((font, i) => {
@@ -89,30 +120,30 @@
         label.className = "font-radio";
         label.innerText = font;
         label.for = font;
-        const radio = document.createElement("input")
+        const radio = document.createElement("input");
         radio.type = "radio";
-        radio.name = "font-select"
+        radio.name = "font-select";
         radio.id = font;
         radio.value = i;
-        radio.onchange = e => {
-          loadSelectedFont(e.target.value | 0)
-        }
-        label.appendChild(radio)
+        radio.onchange = (e) => {
+          loadSelectedFont(e.target.value | 0);
+        };
+        label.appendChild(radio);
         radioButtons.appendChild(label);
-      })
+      });
 
       const canvas = document.getElementById("preview-canvas");
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'black';
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "black";
 
       input.onkeyup = input.onchange = (e) => {
         if (currentFont) {
           redrawText(e.target.value);
         }
-      }
+      };
 
-      loadSelectedFont(0)
-    }
+      loadSelectedFont(0);
+    };
   </script>
 </head>
 <body>
@@ -124,6 +155,62 @@
     <div id="result">
       <canvas style="flex-grow: 0; width: 1024px; height: 100px; image-rendering: pixelated;" id="preview-canvas"
         width="512" height="50"></canvas>
+    </div>
+    <div>
+      <table id="font-info">
+        <tr>
+          <th>Font name</th>
+          <td id="prop-font-name"></td>
+        </tr>
+        <tr>
+          <th>Font family</th>
+          <td id="prop-font-family"></td>
+        </tr>
+        <!-- <tr>
+              <th>Glyph count</th>
+              <td id="prop-glyph-count"></td>
+           </tr> -->
+        <tr>
+          <th>Glyph width</th>
+          <td id="prop-glyph-width"></td>
+        </tr>
+        <tr>
+          <th>Glyph height</th>
+          <td id="prop-glyph-height"></td>
+        </tr>
+        <tr>
+          <th>Min glyph width</th>
+          <td id="prop-min-glyph-width"></td>
+        </tr>
+        <tr>
+          <th>Max glyph width</th>
+          <td id="prop-max-glyph-width"></td>
+        </tr>
+        <tr>
+          <th>Basline</th>
+          <td id="prop-basline"></td>
+        </tr>
+        <tr>
+          <th>Mean line</th>
+          <td id="prop-mean-line"></td>
+        </tr>
+        <tr>
+          <th>Presentation size</th>
+          <td id="prop-presentation-size"></td>
+        </tr>
+        <tr>
+          <th>Weigh:</th>
+          <td id="prop-weight"></td>
+        </tr>
+        <tr>
+          <th>Slope</th>
+          <td id="prop-slope"></td>
+        </tr>
+        <tr>
+          <th>Fixed width?</th>
+          <td id="prop-fixed-width"></td>
+        </tr>
+      </table>
     </div>
   </div>
 </body>
