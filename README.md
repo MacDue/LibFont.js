@@ -8,6 +8,7 @@ Example usage:
 ```js
 const canvas = document.getElementById("some-canvas");
 const ctx = canvas.getContext('2d');
+// Set the fillStyle to any color you like!
 ctx.fillStyle = 'black';
 
 BitmapFont.loadFont(`./KaticaBold10.font`).then(font => {
