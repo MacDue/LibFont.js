@@ -58,6 +58,11 @@ BitmapFont.loadFont(`./KaticaBold10.font`).then(font => {
 
 ### Glyph
 
+#### Class Methods:
+
+- `glyph.toDataURL(fillStyle='black') -> string`
+  - Converts the glyph into a data URL (that can be used as the `src` of an `img` tag)
+
 #### Properties:
 
 - `glyph.bitmap` (is a `GlyphBitmap`)

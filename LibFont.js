@@ -145,6 +145,16 @@ class Glyph {
     this.advance = advance;
     this.ascent = ascent;
   }
+
+  toDataURL = (fillStyle = 'black') => {
+    const canvas = document.createElement('canvas');
+    canvas.width = this.bitmap.width;
+    canvas.height = this.bitmap.height;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = fillStyle;
+    this.bitmap.paintInto(ctx, 0, 0);
+    return canvas.toDataURL();
+  }
 }
 
 class BitmapFont {
