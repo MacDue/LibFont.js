@@ -11,7 +11,7 @@ const ctx = canvas.getContext('2d');
 // Set the fillStyle to any color you like!
 ctx.fillStyle = 'black';
 
-BitmapFont.loadFont(`./KaticaBold10.font`).then(font => {
+BitmapFont.loadFont('./KaticaBold10.font').then(font => {
   font.drawTextInto(ctx, 10, 10, "Well, hello friends!");
 })
 ```

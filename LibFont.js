@@ -11,10 +11,6 @@
 
 const SIZE_OF_U32 = 4;
 
-const bytesFrom = (bytes, start, length) => {
-  return bytes.subarray(start, start + length)
-}
-
 // FIXME: Make this not super dumb
 const lazyPopCount = (int) => {
   return (int.toString(2).match(/1/g) || []).length
