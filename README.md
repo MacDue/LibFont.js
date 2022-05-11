@@ -13,7 +13,7 @@ const ctx = canvas.getContext('2d');
 // Set the fillStyle to any color you like!
 ctx.fillStyle = 'black';
 
-BitmapFont.loadFont('./KaticaBold10.font').then(font => {
+LibFont.BitmapFont.loadFont('./KaticaBold10.font').then(font => {
   font.drawTextInto(ctx, 10, 10, "Well, hello friends!");
 })
 ```
@@ -24,11 +24,11 @@ BitmapFont.loadFont('./KaticaBold10.font').then(font => {
 
 #### Static Methods:
 
-- `BitmapFont.loadFont(url) -> Promise<BitmapFont>`
+- `LibFont.BitmapFont.loadFont(url) -> Promise<BitmapFont>`
   - Load a `.font` file from a URL
-- `BitmapFont.loadFontFromArrayBuffer(buffer) -> BitmapFont`
+- `LibFont.BitmapFont.loadFontFromArrayBuffer(buffer) -> BitmapFont`
   - Load a `.font` file from an array buffer
-- `BitmapFont.loadFontFromUint8Array(array) -> BitmapFont`
+- `LibFont.BitmapFont.loadFontFromUint8Array(array) -> BitmapFont`
   - Load a `.font` from a uint8 array
 
 #### Class Methods:
@@ -76,7 +76,7 @@ BitmapFont.loadFont('./KaticaBold10.font').then(font => {
 
 #### Static Methods:
 
-- `GlyphBitmap.bytesPerRow()`
+- `LibFont.GlyphBitmap.bytesPerRow()`
 
 #### Class Methods:
 

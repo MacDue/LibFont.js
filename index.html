@@ -113,7 +113,7 @@
 
       const loadSelectedFont = (fontIndex) => {
         const selectedFont = FONT_LIST[fontIndex];
-        BitmapFont.loadFont(`./fonts/${selectedFont}`).then((font) => {
+        LibFont.BitmapFont.loadFont(`./fonts/${selectedFont}`).then((font) => {
           currentFont = font;
           redrawText(input.value);
           updateFontInfoTable(font);
