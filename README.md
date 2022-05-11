@@ -2,6 +2,8 @@
 
 This is a JavaScript translation/implementaion of the bitmap fonts from SerenityOS.
 
+**Demo:** [https://macdue.github.io/LibFont.js/](https://macdue.github.io/LibFont.js/)
+
 // TODO: Make a nicer README.md :^)
 
 Example usage:
