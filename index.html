@@ -17,6 +17,11 @@
 
     th {
       text-align: right;
+      padding-right: 6px;
+    }
+
+    #font-info {
+      padding: 3px;
     }
 
     #font-info,
@@ -101,7 +106,8 @@
           "prop-fixed-width": "fixedWidth",
         };
         for (const [id, attr] of Object.entries(propMap)) {
-          document.getElementById(id).innerText = font[attr];
+          // Note .innerText seems not to be working in LibWeb
+          document.getElementById(id).innerHTML = font[attr];
         }
       };
 
@@ -159,55 +165,55 @@
     <div>
       <table id="font-info">
         <tr>
-          <th>Font name</th>
+          <th><b>Font name</b></th>
           <td id="prop-font-name"></td>
         </tr>
         <tr>
-          <th>Font family</th>
+          <th><b>Font family</b></th>
           <td id="prop-font-family"></td>
         </tr>
         <!-- <tr>
-              <th>Glyph count</th>
+              <th><b>Glyph count</b></th>
               <td id="prop-glyph-count"></td>
            </tr> -->
         <tr>
-          <th>Glyph width</th>
+          <th><b>Glyph width</b></th>
           <td id="prop-glyph-width"></td>
         </tr>
         <tr>
-          <th>Glyph height</th>
+          <th><b>Glyph height</b></th>
           <td id="prop-glyph-height"></td>
         </tr>
         <tr>
-          <th>Min glyph width</th>
+          <th><b>Min glyph width</b></th>
           <td id="prop-min-glyph-width"></td>
         </tr>
         <tr>
-          <th>Max glyph width</th>
+          <th><b>Max glyph width</b></th>
           <td id="prop-max-glyph-width"></td>
         </tr>
         <tr>
-          <th>Basline</th>
+          <th><b>Basline</b></th>
           <td id="prop-basline"></td>
         </tr>
         <tr>
-          <th>Mean line</th>
+          <th><b>Mean line</b></th>
           <td id="prop-mean-line"></td>
         </tr>
         <tr>
-          <th>Presentation size</th>
+          <th><b>Presentation size</b></th>
           <td id="prop-presentation-size"></td>
         </tr>
         <tr>
-          <th>Weigh:</th>
+          <th><b>Weigh:</b></th>
           <td id="prop-weight"></td>
         </tr>
         <tr>
-          <th>Slope</th>
+          <th><b>Slope</b></th>
           <td id="prop-slope"></td>
         </tr>
         <tr>
-          <th>Fixed width?</th>
+          <th><b>Fixed width?</b></th>
           <td id="prop-fixed-width"></td>
         </tr>
       </table>
