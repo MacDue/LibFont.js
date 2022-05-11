@@ -76,7 +76,7 @@ BitmapFont.loadFont('./KaticaBold10.font').then(font => {
 
 #### Static Methods:
 
-- `GlyphBitmap.bytesPerRow`
+- `GlyphBitmap.bytesPerRow()`
 
 #### Class Methods:
 
