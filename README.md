@@ -21,22 +21,22 @@ BitmapFont.loadFont(`./KaticaBold10.font`).then(font => {
 
 #### Static Methods:
 
-- `BitmapFont.loadFont(url)`
+- `BitmapFont.loadFont(url) -> Promise<BitmapFont>`
   - Load a `.font` file from a URL
-- `BitmapFont.loadFontFromArrayBuffer(buffer)`
+- `BitmapFont.loadFontFromArrayBuffer(buffer) -> BitmapFont`
   - Load a `.font` file from an array buffer
-- `BitmapFont.loadFontFromUint8Array(array)`
+- `BitmapFont.loadFontFromUint8Array(array) -> BitmapFont`
   - Load a `.font` from a uint8 array
 
 #### Class Methods:
 
 - `font.drawTextInto(canvasCtx, drawX, drawY, text)`
   - Draw a some text into a canvas at `(drawX, drawY)`
-- `font.glyph(codepoint)`
+- `font.glyph(codepoint) -> Glpyh`
   - Lookup the glyph for `codepoint`
-- `font.glyphIndex(codepoint)`
+- `font.glyphIndex(codepoint) -> Integer`
   - Look up the glyph index for `codepoint`
-- `font.containsGlyph(codepoint)`
+- `font.containsGlyph(codepoint) -> bool`
   - Check if a font contains a glyph for `codepoint`
 
 #### Properties:
@@ -59,7 +59,7 @@ BitmapFont.loadFont(`./KaticaBold10.font`).then(font => {
 
 #### Properties:
 
-- `glyph.bitmap`
+- `glyph.bitmap` (is a `GlyphBitmap`)
 - `glyph.leftBearing`
 - `glyph.advance`
 - `glyph.ascent`
