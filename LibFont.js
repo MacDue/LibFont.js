@@ -7,6 +7,8 @@
  * Copyright (c) 2018-2020, Andreas Kling <kling@serenityos.org>
  *
  * (This is mostly a direct JavaScript translation)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
 */
 
 const SIZE_OF_U32 = 4;
