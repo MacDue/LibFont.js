@@ -218,7 +218,11 @@ const LibFont = (() => {
 
     glyph = (codepoint) => {
       const index = this.glyphIndex(codepoint);
+      if (index === null)
+        return null;
       const width = this.glyphWidths.at(index);
+      if (width === 0)
+        return null;
       return new Glyph(
         new GlyphBitmap(this.rows, index * this.glyphHeight, width, this.glyphHeight),
         0, width, this.glyphWidth)
@@ -270,9 +274,12 @@ const LibFont = (() => {
     drawTextInto = (canvasCtx, drawX, drawY, text) => {
       let x = 0;
       [...(text)].map(c => {
-        const glyph = this.glyph(c.codePointAt(0));
-        glyph.bitmap.paintInto(canvasCtx, drawX + x, drawY)
-        x += glyph.advance + this.glyphSpacing;
+        const glyph = this.glyph(c.codePointAt(0)) ?? this.glyph(0xFFFD);
+        if (glyph) {
+          // Note: The glyph may still not be present when the font doesn't have 0xFFFD REPLACEMENT CHARACTER.
+          glyph.bitmap.paintInto(canvasCtx, drawX + x, drawY)
+          x += glyph.advance + this.glyphSpacing;
+        }
       })
     }
   }
