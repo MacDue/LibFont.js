@@ -227,8 +227,6 @@ const LibFont = (() => {
     glyph = (codepoint) => {
       // Try getting the glyph, then the 0xFFFD REPLACEMENT CHARACTER, otherwise '?'
       const index = this.glyphIndex(codepoint) ?? this.glyphIndex(0xFFFD) ?? 0x3f;
-      if (index === null)
-        return null;
       const width = this.glyphWidths.at(index);
       if (width === 0)
         return null;
