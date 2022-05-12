@@ -153,6 +153,7 @@
         radio.name = "font-select";
         radio.id = font;
         radio.value = i;
+        radio.checked = i === 0;
         radio.onchange = (e) => {
           loadSelectedFont(e.target.value | 0);
         };
