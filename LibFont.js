@@ -140,6 +140,16 @@ const LibFont = (() => {
     }
   }
 
+  class HiddenCanvas {
+    constructor(width, height) {
+      this.canvas = document.createElement('canvas');
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
+    getContext2D = () => this.canvas.getContext('2d')
+    toDataURL = () => this.canvas.toDataURL()
+  }
+
   class Glyph {
     constructor(bitmap, leftBearing, advance, ascent) {
       this.bitmap = bitmap;
@@ -149,10 +159,8 @@ const LibFont = (() => {
     }
 
     toDataURL = (fillStyle = 'black') => {
-      const canvas = document.createElement('canvas');
-      canvas.width = this.bitmap.width;
-      canvas.height = this.bitmap.height;
-      const ctx = canvas.getContext('2d');
+      const canvas = new HiddenCanvas(this.bitmap.width, this.bitmap.height);
+      const ctx = canvas.getContext2D();
       ctx.fillStyle = fillStyle;
       this.bitmap.paintInto(ctx, 0, 0);
       return canvas.toDataURL();
@@ -217,7 +225,8 @@ const LibFont = (() => {
     }
 
     glyph = (codepoint) => {
-      const index = this.glyphIndex(codepoint);
+      // Try getting the glyph, then the 0xFFFD REPLACEMENT CHARACTER, otherwise '?'
+      const index = this.glyphIndex(codepoint) ?? this.glyphIndex(0xFFFD) ?? 0x3f;
       if (index === null)
         return null;
       const width = this.glyphWidths.at(index);
@@ -271,16 +280,37 @@ const LibFont = (() => {
       }).then(this.loadFontFromArrayBuffer)
     }
 
+    forEachGlyph = (text, callback) => {
+      for (const c of text) {
+        const glyph = this.glyph(c.codePointAt(0));
+        if (glyph) {
+          callback(glyph)
+        }
+      }
+    }
+
     drawTextInto = (canvasCtx, drawX, drawY, text) => {
       let x = 0;
-      [...(text)].map(c => {
-        const glyph = this.glyph(c.codePointAt(0)) ?? this.glyph(0xFFFD);
-        if (glyph) {
-          // Note: The glyph may still not be present when the font doesn't have 0xFFFD REPLACEMENT CHARACTER.
-          glyph.bitmap.paintInto(canvasCtx, drawX + x, drawY)
-          x += glyph.advance + this.glyphSpacing;
-        }
+      this.forEachGlyph(text, glyph => {
+        glyph.bitmap.paintInto(canvasCtx, drawX + x, drawY)
+        x += glyph.advance + this.glyphSpacing;
       })
+    }
+
+    textWidth = (text) => {
+      let x = 0;
+      this.forEachGlyph(text, glyph => {
+        x += glyph.advance + this.glyphSpacing;
+      })
+      return x;
+    }
+
+    getTextAsDataURL = (text, fillStyle = 'black') => {
+      const canvas = new HiddenCanvas(this.textWidth(text), this.glyphHeight);
+      const ctx = canvas.getContext2D();
+      ctx.fillStyle = fillStyle;
+      this.drawTextInto(ctx, 0, 0, text);
+      return canvas.toDataURL();
     }
   }
 

@@ -37,10 +37,16 @@ LibFont.BitmapFont.loadFont('./KaticaBold10.font').then(font => {
   - Draw a some text into a canvas at `(drawX, drawY)`
 - `font.glyph(codepoint) -> Glpyh`
   - Lookup the glyph for `codepoint`
-- `font.glyphIndex(codepoint) -> Integer`
+- `font.glyphIndex(codepoint) -> integer`
   - Look up the glyph index for `codepoint`
 - `font.containsGlyph(codepoint) -> bool`
   - Check if a font contains a glyph for `codepoint`
+- `font.forEachGlyph(text, callback)`
+  - Iterate over all glyphs in some text
+- `font.textWidth(text) -> integer`
+  - Get the width of some text (in pixels)
+- `font.getTextAsDataURL(text, fillStyle='black') -> string`
+  - Get some text as a data URL image (that can be used as the `src` of an `img` tag)
 
 #### Properties:
 
@@ -63,7 +69,7 @@ LibFont.BitmapFont.loadFont('./KaticaBold10.font').then(font => {
 #### Class Methods:
 
 - `glyph.toDataURL(fillStyle='black') -> string`
-  - Converts the glyph into a data URL (that can be used as the `src` of an `img` tag)
+  - Converts the glyph into a data URL image (that can be used as the `src` of an `img` tag)
 
 #### Properties:
 
