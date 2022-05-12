@@ -93,19 +93,22 @@
     ];
 
     window.onload = () => {
+      let currentColor = "black";
       const input = document.getElementById("text-input");
+      let currentText = input.value;
       const canvas = document.getElementById("preview-canvas");
+      const colorInput = document.getElementById("text-color");
       const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "black";
 
       let currentFont = null;
-      const redrawText = (text) => {
-        const textWidth = currentFont.textWidth(text);
+      const redrawText = () => {
+        const textWidth = currentFont.textWidth(currentText);
         canvas.width = textWidth;
         canvas.height = currentFont.glyphHeight;
         canvas.style.width = `${canvas.width * 2}px`;
         canvas.style.height = `${canvas.height * 2}px`;
-        currentFont.drawTextInto(ctx, 0, 0, text);
+        ctx.fillStyle = currentColor;
+        currentFont.drawTextInto(ctx, 0, 0, currentText);
       };
 
       const updateFontInfoTable = (font) => {
@@ -134,7 +137,7 @@
         const selectedFont = FONT_LIST[fontIndex];
         LibFont.BitmapFont.loadFont(`./fonts/${selectedFont}`).then((font) => {
           currentFont = font;
-          redrawText(input.value);
+          redrawText();
           updateFontInfoTable(font);
         });
       };
@@ -159,9 +162,18 @@
 
       input.onkeyup = input.onchange = (e) => {
         if (currentFont) {
-          redrawText(e.target.value);
+          currentText = e.target.value;
+          redrawText();
         }
       };
+
+      colorInput.onchange = (e) => {
+        console.log(e.target.value)
+        if (currentFont) {
+          currentColor = e.target.value;
+          redrawText();
+        }
+      }
 
       loadSelectedFont(0);
     };
@@ -173,6 +185,8 @@
     <div id="font-selection"></div>
     <label for="text-input">Your text:</label>
     <input id="text-input" type="text" value="Well, hello friends!" />
+    <label for="text-color">Text color:</label>
+    <input type="color" id="text-color" value="#000">
     <div id="result">
       <canvas width="0" height="0" id="preview-canvas"></canvas>
     </div>
