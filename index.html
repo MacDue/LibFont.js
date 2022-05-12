@@ -29,6 +29,14 @@
       border-style: solid;
       border-width: 1px;
     }
+
+    #preview-canvas {
+      image-rendering: pixelated;
+      flex-grow: 0;
+      margin-top: 3px;
+      padding: 12px;
+      border: 1px dashed;
+    }
   </style>
   <script>
     const FONT_LIST = [
@@ -82,11 +90,18 @@
 
     window.onload = () => {
       const input = document.getElementById("text-input");
+      const canvas = document.getElementById("preview-canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "black";
 
       let currentFont = null;
       const redrawText = (text) => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        currentFont.drawTextInto(ctx, 1, 10, text);
+        const textWidth = currentFont.textWidth(text);
+        canvas.width = textWidth;
+        canvas.height = currentFont.glyphHeight;
+        canvas.style.width = `${canvas.width * 2}px`;
+        canvas.style.height = `${canvas.height * 2}px`;
+        currentFont.drawTextInto(ctx, 0, 0, text);
       };
 
       const updateFontInfoTable = (font) => {
@@ -138,10 +153,6 @@
         radioButtons.appendChild(label);
       });
 
-      const canvas = document.getElementById("preview-canvas");
-      const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "black";
-
       input.onkeyup = input.onchange = (e) => {
         if (currentFont) {
           redrawText(e.target.value);
@@ -159,8 +170,7 @@
     <label for="text-input">Your text:</label>
     <input id="text-input" type="text" value="Well, hello friends!" />
     <div id="result">
-      <canvas style="flex-grow: 0; width: 1024px; height: 100px; image-rendering: pixelated;" id="preview-canvas"
-        width="512" height="50"></canvas>
+      <canvas width="0" height="0" id="preview-canvas"></canvas>
     </div>
     <div>
       <table id="font-info">
