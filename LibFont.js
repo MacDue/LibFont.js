@@ -14,9 +14,12 @@
 const LibFont = (() => {
   const SIZE_OF_U32 = 4;
 
-  // FIXME: Make this not super dumb
-  const lazyPopCount = (int) => {
-    return (int.toString(2).match(/1/g) || []).length
+  const popCount = (int) => {
+    let count = 0;
+    for (; int != 0; int >>= 1)
+      if (int & 0b1)
+        ++count;
+    return count;
   }
 
   class ByteSpan {
@@ -233,7 +236,7 @@ const LibFont = (() => {
 
       let glyphCount = 0;
       for (let i = 0; i < header.rangeMaskSize; i++) {
-        glyphCount += 256 * lazyPopCount(rangeMask.at(i))
+        glyphCount += 256 * popCount(rangeMask.at(i))
       }
       const rows = rangeMask.slice(header.rangeMaskSize)
       const bytesPerGlyph = SIZE_OF_U32 * header.glyphHeight;
