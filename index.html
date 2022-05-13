@@ -99,6 +99,13 @@
       const canvas = document.getElementById("preview-canvas");
       const colorInput = document.getElementById("text-color");
       const ctx = canvas.getContext("2d");
+      const cursedDemo = document.getElementById("cursed-demo");
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const doCursedDemo = ~~urlParams.get("cursed");
+      if (doCursedDemo) {
+        document.getElementById("demo").style.display = 'none';
+      }
 
       let currentFont = null;
       const redrawText = () => {
@@ -137,8 +144,13 @@
         const selectedFont = FONT_LIST[fontIndex];
         LibFont.BitmapFont.loadFont(`./fonts/${selectedFont}`).then((font) => {
           currentFont = font;
-          redrawText();
-          updateFontInfoTable(font);
+          if (!doCursedDemo) {
+            redrawText();
+            updateFontInfoTable(font);
+          } else {
+            cursedDemo.innerHTML = '';
+            cursedDemo.appendChild(currentFont.getTextAsHTML('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'))
+          }
         });
       };
 
@@ -184,69 +196,75 @@
   <h1>Try out a SerenityOS font!</h1>
   <div style="display: flex; flex-direction: column;">
     <div id="font-selection"></div>
-    <label for="text-input">Your text:</label>
-    <input id="text-input" type="text" value="Well, hello friends!" />
-    <label for="text-color">Text color:</label>
-    <input type="color" id="text-color" value="#000">
-    <div id="result">
-      <canvas width="0" height="0" id="preview-canvas"></canvas>
-    </div>
-    <div>
-      <table id="font-info">
-        <tr>
-          <th><b>Font name</b></th>
-          <td id="prop-font-name"></td>
-        </tr>
-        <tr>
-          <th><b>Font family</b></th>
-          <td id="prop-font-family"></td>
-        </tr>
-        <!-- <tr>
-              <th><b>Glyph count</b></th>
-              <td id="prop-glyph-count"></td>
-           </tr> -->
-        <tr>
-          <th><b>Glyph width</b></th>
-          <td id="prop-glyph-width"></td>
-        </tr>
-        <tr>
-          <th><b>Glyph height</b></th>
-          <td id="prop-glyph-height"></td>
-        </tr>
-        <tr>
-          <th><b>Min glyph width</b></th>
-          <td id="prop-min-glyph-width"></td>
-        </tr>
-        <tr>
-          <th><b>Max glyph width</b></th>
-          <td id="prop-max-glyph-width"></td>
-        </tr>
-        <tr>
-          <th><b>Baseline</b></th>
-          <td id="prop-baseline"></td>
-        </tr>
-        <tr>
-          <th><b>Mean line</b></th>
-          <td id="prop-mean-line"></td>
-        </tr>
-        <tr>
-          <th><b>Presentation size</b></th>
-          <td id="prop-presentation-size"></td>
-        </tr>
-        <tr>
-          <th><b>Weight</b></th>
-          <td id="prop-weight"></td>
-        </tr>
-        <tr>
-          <th><b>Slope</b></th>
-          <td id="prop-slope"></td>
-        </tr>
-        <tr>
-          <th><b>Fixed width?</b></th>
-          <td id="prop-fixed-width"></td>
-        </tr>
-      </table>
+    <div id="demo">
+      <div style="width: 100%; margin-bottom: 12px; font-size: 20px">
+        <a href="?cursed=1">Text wrapping demo</a>
+      </div>
+      <label for="text-input">Your text:</label>
+      <input id="text-input" type="text" value="Well, hello friends!" />
+      <label for="text-color">Text color:</label>
+      <input type="color" id="text-color" value="#000">
+      <div id="result">
+        <canvas width="0" height="0" id="preview-canvas"></canvas>
+      </div>
+      <div>
+        <table id="font-info">
+          <tr>
+            <th><b>Font name</b></th>
+            <td id="prop-font-name"></td>
+          </tr>
+          <tr>
+            <th><b>Font family</b></th>
+            <td id="prop-font-family"></td>
+          </tr>
+          <!-- <tr>
+                <th><b>Glyph count</b></th>
+                <td id="prop-glyph-count"></td>
+            </tr> -->
+          <tr>
+            <th><b>Glyph width</b></th>
+            <td id="prop-glyph-width"></td>
+          </tr>
+          <tr>
+            <th><b>Glyph height</b></th>
+            <td id="prop-glyph-height"></td>
+          </tr>
+          <tr>
+            <th><b>Min glyph width</b></th>
+            <td id="prop-min-glyph-width"></td>
+          </tr>
+          <tr>
+            <th><b>Max glyph width</b></th>
+            <td id="prop-max-glyph-width"></td>
+          </tr>
+          <tr>
+            <th><b>Baseline</b></th>
+            <td id="prop-baseline"></td>
+          </tr>
+          <tr>
+            <th><b>Mean line</b></th>
+            <td id="prop-mean-line"></td>
+          </tr>
+          <tr>
+            <th><b>Presentation size</b></th>
+            <td id="prop-presentation-size"></td>
+          </tr>
+          <tr>
+            <th><b>Weight</b></th>
+            <td id="prop-weight"></td>
+          </tr>
+          <tr>
+            <th><b>Slope</b></th>
+            <td id="prop-slope"></td>
+          </tr>
+          <tr>
+            <th><b>Fixed width?</b></th>
+            <td id="prop-fixed-width"></td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
+  <div id="cursed-demo"></div>
 </body>
 </html>
