@@ -47,6 +47,8 @@ LibFont.BitmapFont.loadFont('./KaticaBold10.font').then(font => {
   - Get the width of some text (in pixels)
 - `font.getTextAsDataURL(text, fillStyle='black') -> string`
   - Get some text as a data URL image (that can be used as the `src` of an `img` tag)
+- `font.getTextAsHTML(text, fillStyle='black') -> HTMLElement`
+  - Get some text as a HTML element, when inserted onto a page this is copyable and supports word wrapping
 
 #### Properties:
 

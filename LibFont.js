@@ -282,7 +282,7 @@ const LibFont = (() => {
       for (const c of text) {
         const glyph = this.glyph(c.codePointAt(0));
         if (glyph) {
-          callback(glyph)
+          callback(glyph, c)
         }
       }
     }
@@ -310,6 +310,31 @@ const LibFont = (() => {
       this.drawTextInto(ctx, 0, 0, text);
       return canvas.toDataURL();
     }
+
+    getTextAsHTML = (text, fillStyle = 'black') => {
+      const container = document.createElement("div");
+      text.split(/(\s+)/).map(token => {
+        const tokenContainer = document.createElement("span");
+        tokenContainer.style.display = "inline-block";
+        this.forEachGlyph(token, (glyph, character) => {
+          if (character == ' ')
+            character = '\xa0';
+          const htmlGlyph = document.createElement("span");
+          htmlGlyph.style.width = `${glyph.bitmap.width}px`;
+          htmlGlyph.style.height = `${glyph.bitmap.height}px`;
+          htmlGlyph.style.backgroundImage = `url(${glyph.toDataURL(fillStyle)})`;
+          htmlGlyph.style.display = "inline-block";
+          htmlGlyph.style.margin = `${this.glyphSpacing}px`;
+          htmlGlyph.innerText = character;
+          htmlGlyph.style.fontSize = `${this.glyphHeight}px`;
+          htmlGlyph.style.color = '#00000000';
+          htmlGlyph.style.overflow = 'hidden';
+          tokenContainer.appendChild(htmlGlyph);
+        })
+        container.appendChild(tokenContainer);
+      })
+      return container;
+    };
   }
 
   return { ByteSpan, BitmapFont, Glyph, GlyphBitmap }
