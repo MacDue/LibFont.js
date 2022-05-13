@@ -12,7 +12,7 @@
     }
 
     #font-selection {
-      margin-bottom: 6px;
+      margin-bottom: 35px;
     }
 
     th {
@@ -28,6 +28,10 @@
     .font-radio {
       border-style: solid;
       border-width: 1px;
+    }
+
+    #demo > * {
+      margin-bottom: 12px;
     }
 
     #preview-canvas {
@@ -103,8 +107,8 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       const doCursedDemo = ~~urlParams.get("cursed");
-      if (doCursedDemo) {
-        document.getElementById("demo").style.display = 'none';
+      if (!doCursedDemo) {
+        document.getElementById("demo").style.removeProperty('display');
       }
 
       let currentFont = null;
@@ -196,10 +200,7 @@
   <h1>Try out a SerenityOS font!</h1>
   <div style="display: flex; flex-direction: column;">
     <div id="font-selection"></div>
-    <div id="demo">
-      <div style="width: 100%; margin-bottom: 12px; font-size: 20px">
-        <a href="?cursed=1">Text wrapping demo</a>
-      </div>
+    <div id="demo" style="display: none">
       <label for="text-input">Your text:</label>
       <input id="text-input" type="text" value="Well, hello friends!" />
       <label for="text-color">Text color:</label>
@@ -262,6 +263,10 @@
             <td id="prop-fixed-width"></td>
           </tr>
         </table>
+      </div>
+      <hr>
+      <div style="width: 100%; font-size: 20px;">
+        <a href="?cursed=1">Text wrapping demo</a>
       </div>
     </div>
   </div>
