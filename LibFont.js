@@ -313,7 +313,7 @@ const LibFont = (() => {
 
     getTextAsHTML = (text, fillStyle = 'black') => {
       const container = document.createElement("div");
-      text.split(/(\s+)/).map(token => {
+      text.split(/(\S+\s+)/).map(token => {
         const tokenContainer = document.createElement("span");
         tokenContainer.style.display = "inline-block";
         this.forEachGlyph(token, (glyph, character) => {
