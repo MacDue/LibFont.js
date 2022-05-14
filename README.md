@@ -54,6 +54,7 @@ LibFont.BitmapFont.loadFont('./KaticaBold10.font').then(font => {
 
 - `font.name`
 - `font.family`
+- `font.glyphWidth`
 - `font.glyphHeight`
 - `font.minGlyphWidth`
 - `font.maxGlyphWidth`
