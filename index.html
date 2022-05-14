@@ -129,6 +129,7 @@
           // 'prop-glyph-count': 'glyphCount',
           "prop-glyph-width": "glyphWidth",
           "prop-glyph-height": "glyphHeight",
+          "prop-glyph-spacing": "glyphSpacing",
           "prop-min-glyph-width": "minGlyphWidth",
           "prop-max-glyph-width": "maxGlyphWidth",
           "prop-baseline": "baseline",
@@ -204,7 +205,7 @@
       <label for="text-input">Your text:</label>
       <input id="text-input" type="text" value="Well, hello friends!" />
       <label for="text-color">Text color:</label>
-      <input type="color" id="text-color" value="#000">
+      <input type="color" id="text-color" value="#000000">
       <div id="result">
         <canvas width="0" height="0" id="preview-canvas"></canvas>
       </div>
@@ -229,6 +230,10 @@
           <tr>
             <th><b>Glyph height</b></th>
             <td id="prop-glyph-height"></td>
+          </tr>
+          <tr>
+            <th><b>Glyph spacing</b></th>
+            <td id="prop-glyph-spacing"></td>
           </tr>
           <tr>
             <th><b>Min glyph width</b></th>
