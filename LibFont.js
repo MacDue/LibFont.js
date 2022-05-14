@@ -224,12 +224,37 @@ const LibFont = (() => {
       return this.rangeIndices[index] * 256 + codepoint % 256;
     }
 
-    glyph = (codepoint) => {
+    glyphIndexWithReplacement = (codepoint) => {
       // Try getting the glyph, then the 0xFFFD REPLACEMENT CHARACTER, otherwise '?'
-      const index = this.glyphIndex(codepoint) ?? this.glyphIndex(0xFFFD) ?? 0x3f;
+      return this.glyphIndex(codepoint) ?? this.glyphIndex(0xFFFD) ?? 0x3f;
+    }
+
+    codePointGlyphWidth = (codepoint) => {
+      // TODO: Check for non-printable
+      const index = this.glyphIndex(codepoint);
+      return this.fixedWidth || index === null ? this.glyphWidth : this.glyphWidths.at(index);
+    }
+
+    glyphOrEmojiWidthForVariableWidthFont = (codepoint) => {
+      if (codepoint < 0xFFFF) {
+        const index = this.glyphIndexWithReplacement(codepoint);
+        if (this.glyphWidths.at(index) > 0)
+          return this.codePointGlyphWidth(codepoint);
+        return this.codePointGlyphWidth(0xFFFD);
+      }
+      // TODO: Emoji!
+      return this.glyphWidth;
+    }
+
+    glyphOrEmojiWidth = (codepoint) => {
+      if (this.fixedWidth)
+        return this.glyphWidth
+      return this.glyphOrEmojiWidthForVariableWidthFont(codepoint);
+    }
+
+    glyph = (codepoint) => {
+      const index = this.glyphIndexWithReplacement(codepoint);
       const width = this.glyphWidths.at(index);
-      if (width === 0)
-        return null;
       return new Glyph(
         new GlyphBitmap(this.rows, index * this.glyphHeight, width, this.glyphHeight),
         0, width, this.glyphWidth)
@@ -279,26 +304,27 @@ const LibFont = (() => {
     }
 
     forEachGlyph = (text, callback) => {
-      for (const c of text) {
-        const glyph = this.glyph(c.codePointAt(0));
+      for (const char of text) {
+        const codepoint = char.codePointAt(0);
+        const glyph = this.glyph(codepoint);
         if (glyph) {
-          callback(glyph, c)
+          callback(glyph, char, codepoint)
         }
       }
     }
 
     drawTextInto = (canvasCtx, drawX, drawY, text) => {
       let x = 0;
-      this.forEachGlyph(text, glyph => {
+      this.forEachGlyph(text, (glyph, _, codepoint) => {
         glyph.bitmap.paintInto(canvasCtx, drawX + x, drawY)
-        x += glyph.advance + this.glyphSpacing;
+        x += this.glyphOrEmojiWidth(codepoint) + this.glyphSpacing;
       })
     }
 
     textWidth = (text) => {
       let x = 0;
-      this.forEachGlyph(text, glyph => {
-        x += glyph.advance + this.glyphSpacing;
+      this.forEachGlyph(text, (_, __, codepoint) => {
+        x += this.glyphOrEmojiWidth(codepoint) + this.glyphSpacing;
       })
       return x;
     }
@@ -317,17 +343,18 @@ const LibFont = (() => {
       text.split(/(\S+\s+)/).map(token => {
         const tokenContainer = document.createElement("span");
         tokenContainer.style.display = "inline-block";
-        this.forEachGlyph(token, (glyph, character) => {
+        this.forEachGlyph(token, (glyph, character, codepoint) => {
           if (character == ' ')
             character = '\xa0';
           let htmlGlyph = htmlGlyphMap[character]?.cloneNode(true);
           if (!htmlGlyph) {
+            const characterWidth = this.glyphOrEmojiWidth(codepoint);
             htmlGlyph = document.createElement("span");
             htmlGlyph.style.width = `${glyph.bitmap.width}px`;
             htmlGlyph.style.height = `${glyph.bitmap.height}px`;
             htmlGlyph.style.backgroundImage = `url(${glyph.toDataURL(fillStyle)})`;
             htmlGlyph.style.display = "inline-block";
-            htmlGlyph.style.margin = `${this.glyphSpacing}px`;
+            htmlGlyph.style.marginRight = `${this.glyphSpacing + characterWidth - glyph.bitmap.width}px`;
             htmlGlyph.innerText = character;
             htmlGlyph.style.fontSize = `${this.glyphHeight}px`;
             htmlGlyph.style.color = '#00000000';
