@@ -106,7 +106,7 @@
       const cursedDemo = document.getElementById("cursed-demo");
 
       const urlParams = new URLSearchParams(window.location.search);
-      const doCursedDemo = ~~urlParams.get("cursed");
+      const doCursedDemo = !!urlParams.get("cursed");
       if (!doCursedDemo) {
         document.getElementById("demo").style.removeProperty('display');
       }
