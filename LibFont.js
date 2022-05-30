@@ -252,12 +252,20 @@ const LibFont = (() => {
       return this.glyphOrEmojiWidthForVariableWidthFont(codepoint);
     }
 
-    glyph = (codepoint) => {
-      const index = this.glyphIndexWithReplacement(codepoint);
+    glyphAt = (index) => {
       const width = this.glyphWidths.at(index);
       return new Glyph(
         new GlyphBitmap(this.rows, index * this.glyphHeight, width, this.glyphHeight),
         0, width, this.glyphWidth)
+    }
+
+    glyphWidthAt = (index) => {
+      return this.glyphWidths.at(index);
+    }
+
+    glyph = (codepoint) => {
+      const index = this.glyphIndexWithReplacement(codepoint);
+      return this.glyphAt(index);
     }
 
     containsGlyph = (codepoint) => {
@@ -311,6 +319,22 @@ const LibFont = (() => {
           callback(glyph, char, codepoint)
         }
       }
+    }
+
+    forEachFontGlyph = (callback) => {
+      for (let i = 0; i < this.glyphCount; i++) {
+        if (this.glyphWidthAt(i)) {
+          callback(this.glyphAt(i));
+        }
+      }
+    }
+
+    accurateGlyphCount = () => {
+      let accurateCount = 0;
+      this.forEachFontGlyph(() => {
+        ++accurateCount
+      })
+      return accurateCount;
     }
 
     drawTextInto = (canvasCtx, drawX, drawY, text) => {
