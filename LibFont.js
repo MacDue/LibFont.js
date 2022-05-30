@@ -364,6 +364,7 @@ const LibFont = (() => {
     getTextAsHTML = (text, fillStyle = 'black') => {
       const htmlGlyphMap = {};
       const container = document.createElement("div");
+      container.style.lineHeight = `${this.glyphHeight + 4}px`;
       text.split(/(\S+\s+)/).map(token => {
         const makeContainer = () => {
           const container = document.createElement("span");
