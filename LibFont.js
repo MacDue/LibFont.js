@@ -365,9 +365,19 @@ const LibFont = (() => {
       const htmlGlyphMap = {};
       const container = document.createElement("div");
       text.split(/(\S+\s+)/).map(token => {
-        const tokenContainer = document.createElement("span");
-        tokenContainer.style.display = "inline-block";
+        const makeContainer = () => {
+          const container = document.createElement("span");
+          container.style.display = "inline-block";
+          return container;
+        }
+        let tokenContainer = makeContainer();
         this.forEachGlyph(token, (glyph, character, codepoint) => {
+          if (character == '\n') {
+            container.appendChild(tokenContainer);
+            container.appendChild(document.createElement('br'));
+            tokenContainer = makeContainer();
+            return;
+          }
           if (character == ' ')
             character = '\xa0';
           let htmlGlyph = htmlGlyphMap[character]?.cloneNode(true);
