@@ -124,24 +124,24 @@
 
       const updateFontInfoTable = (font) => {
         const propMap = {
-          "prop-font-name": "name",
-          "prop-font-family": "family",
-          // 'prop-glyph-count': 'glyphCount',
-          "prop-glyph-width": "glyphWidth",
-          "prop-glyph-height": "glyphHeight",
-          "prop-glyph-spacing": "glyphSpacing",
-          "prop-min-glyph-width": "minGlyphWidth",
-          "prop-max-glyph-width": "maxGlyphWidth",
-          "prop-baseline": "baseline",
-          "prop-mean-line": "meanLine",
-          "prop-presentation-size": "presentationSize",
-          "prop-weight": "weight",
-          "prop-slope": "slope",
-          "prop-fixed-width": "fixedWidth",
+          "prop-font-name": font.name,
+          "prop-font-family": font.family,
+          'prop-glyph-count': font.accurateGlyphCount(),
+          "prop-glyph-width": font.glyphWidth,
+          "prop-glyph-height": font.glyphHeight,
+          "prop-glyph-spacing": font.glyphSpacing,
+          "prop-min-glyph-width": font.minGlyphWidth,
+          "prop-max-glyph-width": font.maxGlyphWidth,
+          "prop-baseline": font.baseline,
+          "prop-mean-line": font.meanLine,
+          "prop-presentation-size": font.presentationSize,
+          "prop-weight": font.weight,
+          "prop-slope": font.slope,
+          "prop-fixed-width": font.fixedWidth,
         };
-        for (const [id, attr] of Object.entries(propMap)) {
+        for (const [id, value] of Object.entries(propMap)) {
           // Note .innerText seems not to be working in LibWeb
-          document.getElementById(id).innerHTML = font[attr];
+          document.getElementById(id).innerHTML = value;
         }
       };
 
@@ -219,10 +219,10 @@
             <th><b>Font family</b></th>
             <td id="prop-font-family"></td>
           </tr>
-          <!-- <tr>
-                <th><b>Glyph count</b></th>
+          <tr>
+              <th><b>Glyph count</b></th>
                 <td id="prop-glyph-count"></td>
-            </tr> -->
+            </tr>
           <tr>
             <th><b>Glyph width</b></th>
             <td id="prop-glyph-width"></td>
