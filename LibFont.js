@@ -324,7 +324,7 @@ const LibFont = (() => {
     forEachFontGlyph = (callback) => {
       for (let i = 0; i < this.glyphCount; i++) {
         if (this.glyphWidthAt(i)) {
-          callback(this.glyphAt(i));
+          callback(this.glyphAt(i), i);
         }
       }
     }
