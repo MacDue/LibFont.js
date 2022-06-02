@@ -21,6 +21,9 @@ mkdir project_src
 mv !(demo|project_src) ./project_src
 mv demo/* .
 rm -r ./demo
+mkdir dist
+cp static/js/main*.js dist/glyph-table.min.js
+cp static/css/main*.css dist/glyph-table.min.css
 git add !(project_src)
 git commit -m "Publish demo"
 git push -f --set-upstream origin demo
