@@ -1,0 +1,82 @@
+<h3 class="h4 mt-4">Preview</h3>
+<div style="text-align: center;">
+  <div class="border" style="display: inline-block; padding: 12px; "><img id="glyph-preview" style="width: 100px; image-rendering: pixelated;"/></div>
+</div>
+<select id="font-selection" class="form-select"></select>
+<script src="./LibFont.js"></script>
+<script>
+  const FONT_LIST = [
+    "KaticaRegular10.font",
+    "RomanItalic10.font",
+    "CsillaRegular10.font",
+    "PebbletonBold14.font",
+    "CsillaRegular12.font",
+    "AtaraxiaBold8.font",
+    "TinyRegular6.font",
+    "LucidityBold12.font",
+    "MarietaBold24.font",
+    "AtaraxiaBold10.font",
+    "ComicBookRegular10.font",
+    "TinierRegular5.font",
+    "KaticaRegular12.font",
+    "AtaraxiaLight8.font",
+    "SourceBold10.font",
+    "SatoriMonoBold10.font",
+    "RomanRegular10.font",
+    "LizaBlack36.font",
+    "PebbletonRegular14.font",
+    "LizaRegular10.font",
+    "CathodeRegular10.font",
+    "LizaBold24.font",
+    "SatoriBold10.font",
+    "TengchahRegular12.font",
+    "MarietaRegular24.font",
+    "LizaRegular36.font",
+    "CJKBiángRegular36.font",
+    "CsillaBold10.font",
+    "LizaBold36.font",
+    "MarietaBold36.font",
+    "SourceItalic10.font",
+    "LizaBlack24.font",
+    "KaticaItalic10.font",
+    "AtaraxiaLight10.font",
+    "MarietaRegular36.font",
+    "KaticaBold12.font",
+    "LucidityRegular12.font",
+    "LizaRegular24.font",
+    "SourceRegular10.font",
+    "RomanItalic8.font",
+    "SatoriMonoRegular10.font",
+    "KaticaBold10.font",
+    "LizaBold10.font",
+    "CsillaBold12.font",
+    "LizaBlack10.font",
+    "SatoriRegular10.font",
+  ]
+
+  window.onload = () => {
+    const preview = document.getElementById("glyph-preview")
+    const renderPreview = (font, codepoint) => {
+      preview.src = font.glyph(codepoint).toDataURL()
+    }
+
+    const dropdown = document.getElementById("font-selection")
+    for (const font of FONT_LIST) {
+      const option = document.createElement("option")
+      option.value = font
+      option.text = font
+      dropdown.appendChild(option)
+    }
+
+    const onFontSelectionChange = () => {
+      const selectedFont = FONT_LIST[dropdown.selectedIndex]
+      LibFont.BitmapFont.loadFont(`./fonts/${selectedFont}`).then(font => {
+        // Change '117' with the codepoint of the glyph to preview:
+        renderPreview(font, 117);
+      })
+    }
+
+    onFontSelectionChange()
+    dropdown.onchange = onFontSelectionChange
+  }
+</script>

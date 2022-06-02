@@ -1,0 +1,49 @@
+<script>
+  window.onload = () => {
+    // Change this to the name of the font you wish to the the glyph table for:
+    let pageFont = "CsillaRegular10";
+    const glyphPreview = document.getElementById("glyph-preview");
+    LibFont.BitmapFont.loadFont(`./fonts/${pageFont}.font`).then(font => {
+      /* Hacky, hacky, hacks! */
+      const rangeIdxMap = [];
+      font.rangeIndices.forEach((value, index) => {
+        rangeIdxMap[value] = index;
+      })
+      const glpyhIndexToCodepoint = (index) => {
+        const lowerCodepointByte = index & 0xff;
+        const rangeIdx = index >> 8;
+        let upperCodepointByte = rangeIdxMap[rangeIdx]
+        return upperCodepointByte << 8 | lowerCodepointByte;
+      }
+
+      font.forEachFontGlyph((glyph, index) => {
+        const codepoint = glpyhIndexToCodepoint(index);
+        const glyphEl = document.createElement("a");
+        glyphEl.className = "g";
+        // Links to /char/<hex codepoint>#<font>
+        glyphEl.href = `/char/${codepoint.toString(16).padStart(4, 0)}#${pageFont}`
+        const char = String.fromCodePoint(codepoint);
+        if (!navigator.userAgent.toLowerCase().includes('serenity')) {
+          /* On OSes other than Serenity render glyph as bitmap */
+          let serenityGlyph = document.createElement('span');
+          serenityGlyph.style.display = "inline-block";
+          serenityGlyph.style.width = `${glyph.bitmap.width}px`;
+          serenityGlyph.style.height = `${glyph.bitmap.height}px`;
+          serenityGlyph.style.backgroundImage = `url(${glyph.toDataURL()})`;
+          serenityGlyph.style.color = "#00000000";
+          serenityGlyph.innerText = char;
+          glyphEl.style.display = "flex";
+          glyphEl.style.alignItems = "center";
+          glyphEl.style.justifyContent = "center";
+          glyphEl.appendChild(serenityGlyph);
+        } else {
+          // Use innerHTML as innerText is funky on Serenity
+          glyphEl.innerHTML = char;
+        }
+        glyphPreview.appendChild(glyphEl);
+      })
+    })
+  }
+</script>
+<div id="glyph-preview" class="g-height-10">
+</div>
