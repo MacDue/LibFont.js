@@ -406,3 +406,7 @@ const LibFont = (() => {
 
   return { ByteSpan, BitmapFont, Glyph, GlyphBitmap }
 })()
+
+if (module) {
+  module.exports = LibFont;
+}
