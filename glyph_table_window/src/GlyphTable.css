@@ -1,0 +1,36 @@
+.glyph {
+  color: rgb(33, 37, 41);
+  display: inline-block;
+  height: 24px;
+  width: 18px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  border-right: 1px solid #eee;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.glyph:hover {
+  overflow: visible;
+  border-bottom-color: rgb(13, 110, 253);
+}
+
+.glyph > span {
+  display: inline-block;
+  color: #00000000;
+}
+
+.glyph-table {
+  border: 1px solid #eee;
+}
+
+#glyph-table-root {
+  margin: 40px;
+  flex-wrap: wrap;
+}
+
+#glyph-table-root, .glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
