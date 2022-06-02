@@ -1,49 +1,119 @@
-<script>
-  window.onload = () => {
-    // Change this to the name of the font you wish to the the glyph table for:
-    let pageFont = "CsillaRegular10";
-    const glyphPreview = document.getElementById("glyph-preview");
-    LibFont.BitmapFont.loadFont(`./fonts/${pageFont}.font`).then(font => {
-      /* Hacky, hacky, hacks! */
-      const rangeIdxMap = [];
-      font.rangeIndices.forEach((value, index) => {
-        rangeIdxMap[value] = index;
-      })
-      const glpyhIndexToCodepoint = (index) => {
-        const lowerCodepointByte = index & 0xff;
-        const rangeIdx = index >> 8;
-        let upperCodepointByte = rangeIdxMap[rangeIdx]
-        return upperCodepointByte << 8 | lowerCodepointByte;
-      }
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LibFont.js Demo</title>
+  <script src="../LibFont.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" rossorigin="anonymous">
+  <style>
+    #glyph-preview {
+      display: flex;
+      flex-wrap: wrap;
+    }
 
-      font.forEachFontGlyph((glyph, index) => {
-        const codepoint = glpyhIndexToCodepoint(index);
-        const glyphEl = document.createElement("a");
-        glyphEl.className = "g";
-        // Links to /char/<hex codepoint>#<font>
-        glyphEl.href = `/char/${codepoint.toString(16).padStart(4, 0)}#${pageFont}`
-        const char = String.fromCodePoint(codepoint);
-        if (!navigator.userAgent.toLowerCase().includes('serenity')) {
-          /* On OSes other than Serenity render glyph as bitmap */
-          let serenityGlyph = document.createElement('span');
-          serenityGlyph.style.display = "inline-block";
-          serenityGlyph.style.width = `${glyph.bitmap.width}px`;
-          serenityGlyph.style.height = `${glyph.bitmap.height}px`;
-          serenityGlyph.style.backgroundImage = `url(${glyph.toDataURL()})`;
-          serenityGlyph.style.color = "#00000000";
-          serenityGlyph.innerText = char;
-          glyphEl.style.display = "flex";
-          glyphEl.style.alignItems = "center";
-          glyphEl.style.justifyContent = "center";
-          glyphEl.appendChild(serenityGlyph);
-        } else {
-          // Use innerHTML as innerText is funky on Serenity
-          glyphEl.innerHTML = char;
+    /* This CSS is stolen from https://fonts.serenityos.net/ :^) */
+    .g:hover {
+      color: rgb(33, 37, 41);
+      overflow: visible;
+      border-bottom-color: rgb(13, 110, 253);
+    }
+
+    .g {
+      color: rgb(33, 37, 41);
+      display: inline-block;
+      height: 24px;
+      width: 18px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+      border-right: 1px solid #eee;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    body {
+      margin: 40px;
+    }
+  </style>
+  <script>
+    const FONT_BASE = "../fonts"
+    const renderGlyphTable = (fontName) => {
+      // Change this to the name of the font you wish to the the glyph table for:
+      const glyphPreview = document.getElementById("glyph-preview");
+      LibFont.BitmapFont.loadFont(`${FONT_BASE}/${fontName}.font`).then(font => {
+        /* Hacky, hacky, hacks! */
+        const rangeIdxMap = [];
+        font.rangeIndices.forEach((value, index) => {
+          rangeIdxMap[value] = index;
+        })
+        const glpyhIndexToCodepoint = (index) => {
+          const lowerCodepointByte = index & 0xff;
+          const rangeIdx = index >> 8;
+          let upperCodepointByte = rangeIdxMap[rangeIdx]
+          return upperCodepointByte << 8 | lowerCodepointByte;
         }
-        glyphPreview.appendChild(glyphEl);
+
+        const loadGlyph = (glyph, index) => {
+          return new Promise((resolve, _) => {
+            const codepoint = glpyhIndexToCodepoint(index);
+            const glyphEl = document.createElement("a");
+            glyphEl.className = "g";
+            // Links to /char/<hex codepoint>#<font>
+            glyphEl.href = `https://fonts.serenityos.net/char/${codepoint.toString(16).toUpperCase().padStart(4, 0)}#${fontName}`
+            const char = String.fromCodePoint(codepoint);
+            if (!navigator.userAgent.toLowerCase().includes('serenity')) {
+              /* On OSes other than Serenity render glyph as bitmap */
+              let serenityGlyph = document.createElement('span');
+              serenityGlyph.style.display = "inline-block";
+              serenityGlyph.style.width = `${glyph.bitmap.width}px`;
+              serenityGlyph.style.height = `${glyph.bitmap.height}px`;
+              const glyphImg = glyph.toDataURL();
+              serenityGlyph.style.backgroundImage = `url(${glyphImg})`;
+              serenityGlyph.style.color = "#00000000";
+              serenityGlyph.innerText = char;
+              glyphEl.style.display = "flex";
+              glyphEl.style.alignItems = "center";
+              glyphEl.style.justifyContent = "center";
+              glyphEl.style.width = `${font.maxGlyphWidth + 6}px`;
+              glyphEl.style.height = `${font.glyphHeight + 8}px`;
+              glyphEl.appendChild(serenityGlyph);
+              // This little trick means this glyph will be fully loaded before processing the next.
+              const loadCheckImage = new Image();
+              loadCheckImage.onload = resolve;
+              loadCheckImage.src = glyphImg;
+            } else {
+              // Use innerHTML as innerText is funky on Serenity
+              glyphEl.innerHTML = char;
+              resolve();
+            }
+            glyphPreview.appendChild(glyphEl);
+          })
+        }
+
+        const glyphs = new Array(font.accurateGlyphCount());
+        let glyphIdx = 0;
+        font.forEachFontGlyph((glyph, index) => {
+          glyphs[glyphIdx] = [glyph, index]
+          glyphIdx++;
+        });
+
+        // Load glyphs sequentially (to avoid a laggy browser)
+        glyphs.reduce((previousPromise, [glyph, index]) => {
+          return previousPromise.then(() => {
+            return loadGlyph(glyph, index);
+          });
+        }, Promise.resolve());
       })
-    })
-  }
-</script>
-<div id="glyph-preview" class="g-height-10">
-</div>
+    }
+
+    window.onload = () => {
+      const fontName = window.location.hash?.substring(1) || "CsillaBold12";
+      renderGlyphTable(fontName);
+    }
+  </script>
+</head>
+<body>
+  <h1>Glyph Table Demo</h1>
+  <div id="glyph-preview" class="g-height-10">
+  </div>
+</body>
+</html>
+

@@ -145,6 +145,7 @@
         }
       };
 
+      const glyphTableLink = document.getElementById('glyph-table-link');
       const loadSelectedFont = (fontIndex) => {
         const selectedFont = FONT_LIST[fontIndex];
         LibFont.BitmapFont.loadFont(`./fonts/${selectedFont}`).then((font) => {
@@ -152,6 +153,7 @@
           if (!doCursedDemo) {
             redrawText();
             updateFontInfoTable(font);
+            glyphTableLink.href = `extra_example_widgets/glyph_table.html#${selectedFont.slice(0, -5)}`
           } else {
             cursedDemo.innerHTML = '';
             cursedDemo.appendChild(currentFont.getTextAsHTML('This is some example text:\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'))
@@ -269,6 +271,7 @@
           </tr>
         </table>
       </div>
+      <a id="glyph-table-link" href="#">View glpyh table</a>
       <hr>
       <div style="width: 100%; font-size: 20px;">
         <a href="?cursed=1">Text wrapping demo</a>
