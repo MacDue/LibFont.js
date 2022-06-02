@@ -18,6 +18,7 @@
 .glyph > span {
   display: inline-block;
   color: #00000000;
+  image-rendering: pixelated;
 }
 
 .glyph-table {
