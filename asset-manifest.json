@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/LibFont.js/static/css/main.ec98180a.css",
+    "main.js": "/LibFont.js/static/js/main.ef8f5dc6.js",
+    "index.html": "/LibFont.js/index.html",
+    "main.ec98180a.css.map": "/LibFont.js/static/css/main.ec98180a.css.map",
+    "main.ef8f5dc6.js.map": "/LibFont.js/static/js/main.ef8f5dc6.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ec98180a.css",
+    "static/js/main.ef8f5dc6.js"
+  ]
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LibFont.js Demo</title>
+  <script src="./LibFont.js"></script>
+  <style>
+    .font-radio {
+      margin: 3px;
+      padding: 3px;
+      display: inline-block;
+      background-color: aliceblue;
+    }
+
+    #font-selection {
+      margin-bottom: 35px;
+    }
+
+    th {
+      text-align: right;
+      padding-right: 6px;
+    }
+
+    #font-info {
+      padding: 3px;
+    }
+
+    #font-info,
+    .font-radio {
+      border-style: solid;
+      border-width: 1px;
+    }
+
+    #demo > * {
+      margin-bottom: 12px;
+    }
+
+    #preview-canvas {
+      image-rendering: pixelated;
+      flex-grow: 0;
+      margin-top: 3px;
+      padding: 12px;
+      border: 1px dashed;
+    }
+
+    #text-input {
+      width: 100%;
+    }
+  </style>
+  <script>
+    const FONT_LIST = [
+      "KaticaRegular10.font",
+      "RomanItalic10.font",
+      "CsillaRegular10.font",
+      "PebbletonBold14.font",
+      "CsillaRegular12.font",
+      "AtaraxiaBold8.font",
+      "TinyRegular6.font",
+      "LucidityBold12.font",
+      "MarietaBold24.font",
+      "AtaraxiaBold10.font",
+      "ComicBookRegular10.font",
+      "TinierRegular5.font",
+      "KaticaRegular12.font",
+      "AtaraxiaLight8.font",
+      "SourceBold10.font",
+      "SatoriMonoBold10.font",
+      "RomanRegular10.font",
+      "LizaBlack36.font",
+      "PebbletonRegular14.font",
+      "LizaRegular10.font",
+      "CathodeRegular10.font",
+      "LizaBold24.font",
+      "SatoriBold10.font",
+      "TengchahRegular12.font",
+      "MarietaRegular24.font",
+      "LizaRegular36.font",
+      "CJKBiángRegular36.font",
+      "CsillaBold10.font",
+      "LizaBold36.font",
+      "MarietaBold36.font",
+      "SourceItalic10.font",
+      "LizaBlack24.font",
+      "KaticaItalic10.font",
+      "AtaraxiaLight10.font",
+      "MarietaRegular36.font",
+      "KaticaBold12.font",
+      "LucidityRegular12.font",
+      "LizaRegular24.font",
+      "SourceRegular10.font",
+      "RomanItalic8.font",
+      "SatoriMonoRegular10.font",
+      "KaticaBold10.font",
+      "LizaBold10.font",
+      "CsillaBold12.font",
+      "LizaBlack10.font",
+      "SatoriRegular10.font",
+    ];
+
+    window.onload = () => {
+      let currentColor = "black";
+      const input = document.getElementById("text-input");
+      let currentText = input.value;
+      const canvas = document.getElementById("preview-canvas");
+      const colorInput = document.getElementById("text-color");
+      const ctx = canvas.getContext("2d");
+      const cursedDemo = document.getElementById("cursed-demo");
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const doCursedDemo = !!urlParams.get("cursed");
+      if (!doCursedDemo) {
+        document.getElementById("demo").style.removeProperty('display');
+      }
+
+      let currentFont = null;
+      const redrawText = () => {
+        const textWidth = currentFont.textWidth(currentText);
+        canvas.width = textWidth;
+        canvas.height = currentFont.glyphHeight;
+        canvas.style.width = `${canvas.width * 2}px`;
+        canvas.style.height = `${canvas.height * 2}px`;
+        ctx.fillStyle = currentColor;
+        currentFont.drawTextInto(ctx, 0, 0, currentText);
+      };
+
+      const updateFontInfoTable = (font) => {
+        const propMap = {
+          "prop-font-name": font.name,
+          "prop-font-family": font.family,
+          'prop-glyph-count': font.accurateGlyphCount(),
+          "prop-glyph-width": font.glyphWidth,
+          "prop-glyph-height": font.glyphHeight,
+          "prop-glyph-spacing": font.glyphSpacing,
+          "prop-min-glyph-width": font.minGlyphWidth,
+          "prop-max-glyph-width": font.maxGlyphWidth,
+          "prop-baseline": font.baseline,
+          "prop-mean-line": font.meanLine,
+          "prop-presentation-size": font.presentationSize,
+          "prop-weight": font.weight,
+          "prop-slope": font.slope,
+          "prop-fixed-width": font.fixedWidth,
+        };
+        for (const [id, value] of Object.entries(propMap)) {
+          // Note .innerText seems not to be working in LibWeb
+          document.getElementById(id).innerHTML = value;
+        }
+      };
+
+      const glyphTableLink = document.getElementById('glyph-table-link');
+      const loadSelectedFont = (fontIndex) => {
+        const selectedFont = FONT_LIST[fontIndex];
+        LibFont.BitmapFont.loadFont(`./fonts/${selectedFont}`).then((font) => {
+          currentFont = font;
+          if (!doCursedDemo) {
+            redrawText();
+            updateFontInfoTable(font);
+            glyphTableLink.href = `glyph_table.html#${selectedFont.slice(0, -5)}`
+          } else {
+            cursedDemo.innerHTML = '';
+            cursedDemo.appendChild(currentFont.getTextAsHTML('This is some example text:\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'))
+          }
+        });
+      };
+
+      const radioButtons = document.getElementById("font-selection");
+      FONT_LIST.forEach((font, i) => {
+        const label = document.createElement("label");
+        label.className = "font-radio";
+        label.innerText = font;
+        label.for = font;
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "font-select";
+        radio.id = font;
+        radio.value = i;
+        radio.checked = i === 0;
+        radio.onchange = (e) => {
+          loadSelectedFont(e.target.value | 0);
+        };
+        label.appendChild(radio);
+        radioButtons.appendChild(label);
+      });
+
+      input.onkeyup = input.onchange = (e) => {
+        if (currentFont) {
+          currentText = e.target.value;
+          redrawText();
+        }
+      };
+
+      colorInput.onchange = (e) => {
+        console.log(e.target.value)
+        if (currentFont) {
+          currentColor = e.target.value;
+          redrawText();
+        }
+      }
+
+      loadSelectedFont(0);
+    };
+  </script>
+</head>
+<body>
+  <h1>Try out a SerenityOS font!</h1>
+  <div style="display: flex; flex-direction: column;">
+    <div id="font-selection"></div>
+    <div id="demo" style="display: none">
+      <label for="text-input">Your text:</label>
+      <input id="text-input" type="text" value="Well, hello friends!" />
+      <label for="text-color">Text color:</label>
+      <input type="color" id="text-color" value="#000000">
+      <div id="result">
+        <canvas width="0" height="0" id="preview-canvas"></canvas>
+      </div>
+      <div>
+        <table id="font-info">
+          <tr>
+            <th><b>Font name</b></th>
+            <td id="prop-font-name"></td>
+          </tr>
+          <tr>
+            <th><b>Font family</b></th>
+            <td id="prop-font-family"></td>
+          </tr>
+          <tr>
+              <th><b>Glyph count</b></th>
+                <td id="prop-glyph-count"></td>
+            </tr>
+          <tr>
+            <th><b>Glyph width</b></th>
+            <td id="prop-glyph-width"></td>
+          </tr>
+          <tr>
+            <th><b>Glyph height</b></th>
+            <td id="prop-glyph-height"></td>
+          </tr>
+          <tr>
+            <th><b>Glyph spacing</b></th>
+            <td id="prop-glyph-spacing"></td>
+          </tr>
+          <tr>
+            <th><b>Min glyph width</b></th>
+            <td id="prop-min-glyph-width"></td>
+          </tr>
+          <tr>
+            <th><b>Max glyph width</b></th>
+            <td id="prop-max-glyph-width"></td>
+          </tr>
+          <tr>
+            <th><b>Baseline</b></th>
+            <td id="prop-baseline"></td>
+          </tr>
+          <tr>
+            <th><b>Mean line</b></th>
+            <td id="prop-mean-line"></td>
+          </tr>
+          <tr>
+            <th><b>Presentation size</b></th>
+            <td id="prop-presentation-size"></td>
+          </tr>
+          <tr>
+            <th><b>Weight</b></th>
+            <td id="prop-weight"></td>
+          </tr>
+          <tr>
+            <th><b>Slope</b></th>
+            <td id="prop-slope"></td>
+          </tr>
+          <tr>
+            <th><b>Fixed width?</b></th>
+            <td id="prop-fixed-width"></td>
+          </tr>
+        </table>
+      </div>
+      <a id="glyph-table-link" href="#">View glpyh table</a>
+      <hr>
+      <div style="width: 100%; font-size: 20px;">
+        <a href="?cursed=1">Text wrapping demo</a>
+      </div>
+    </div>
+  </div>
+  <div id="cursed-demo"></div>
+</body>
+</html>
