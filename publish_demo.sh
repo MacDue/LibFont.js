@@ -9,11 +9,11 @@ then
 fi
 git branch -D demo
 git checkout --orphan demo
-cd glyph_table_window
+cd react_glyph_table
 npm i
 npm run build
 cd ..
-cp -r glyph_table_window/build ./demo
+cp -r react_glyph_table/build ./demo
 mv ./demo/index.html ./demo/glyph_table.html
 cp ./*.html demo
 cp ./*.js demo
