@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import GlyphTable from './GlyphTable';
 import './GlyphTable.css'
+import 'rc-tooltip/assets/bootstrap_white.css';
 
 const root = ReactDOM.createRoot(document.getElementById('glyph-table-root'));
 root.render(

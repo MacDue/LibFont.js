@@ -1,4 +1,5 @@
 import React from 'react';
+import Tooltip from 'rc-tooltip';
 import { FixedSizeGrid as Grid } from 'react-window';
 
 const LibFont = require("./LibFont.js");
@@ -7,7 +8,11 @@ const renderedGlyphs = {}
 
 const Glyph = ({ data: { fontName, columnCount, glyphs, glyphIndexToCodepoint }, columnIndex, rowIndex, style }) => {
   const flatIndex = rowIndex * columnCount + columnIndex;
-  const [glyph, index] = glyphs[flatIndex] ?? glyphs[0];
+  const glyphData = glyphs[flatIndex];
+  if (!glyphData) {
+    return <div className='glyph' style={style}></div>
+  }
+  const [glyph, index] = glyphData;
   const codepoint = glyphIndexToCodepoint(index);
   const char = String.fromCodePoint(codepoint);
 
@@ -16,21 +21,31 @@ const Glyph = ({ data: { fontName, columnCount, glyphs, glyphIndexToCodepoint },
     renderedGlyphs[codepoint] = image;
     return image;
   })()
-  return (<a
-    href={`https://fonts.serenityos.net/char/${codepoint.toString(16).toUpperCase().padStart(4, 0)}#${fontName}`}
-    className="glyph"
-    style={style}
-  >
-    <span
-      style={{
-        backgroundImage: `url(${glyphImage})`,
-        width: `${glyph.bitmap.width}px`,
-        height: `${glyph.bitmap.height}px`
-      }}
-    >
-      {char}
-    </span>
-  </a>)
+
+  const codepointHex = codepoint.toString(16).toUpperCase().padStart(4, 0);
+  return (
+    <Tooltip mouseEnterDelay={0.2} placement="top" overlay={
+        <div className='glyph-tooltip'>
+          <h2>{codepointHex} - {char}</h2>
+          <img className='glyph-tooltip-img' src={glyphImage}></img>
+        </div>
+        }>
+      <a
+        href={`https://fonts.serenityos.net/char/${codepointHex}#${fontName}`}
+        className="glyph"
+        style={style}
+      >
+        <span
+          style={{
+            backgroundImage: `url(${glyphImage})`,
+            width: `${glyph.bitmap.width}px`,
+            height: `${glyph.bitmap.height}px`
+          }}
+        >
+          {char}
+        </span>
+      </a>
+    </Tooltip>)
 }
 
 const FONT_BASE = "fonts"

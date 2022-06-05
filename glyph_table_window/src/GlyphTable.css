@@ -30,6 +30,15 @@
   flex-wrap: wrap;
 }
 
+.glyph-tooltip-img {
+  image-rendering: pixelated;
+  height: 100px;
+}
+
+.glyph-tooltip {
+  text-align: center;
+}
+
 #glyph-table-root, .glyph {
   display: flex;
   align-items: center;
